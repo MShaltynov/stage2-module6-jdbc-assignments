@@ -1,15 +1,17 @@
 package jdbc;
 
+import javax.sql.DataSource;
+
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.Statement;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -21,78 +23,79 @@ public class CustomDataSource implements DataSource {
     private final String url;
     private final String name;
     private final String password;
+    private CustomConnector connector = new CustomConnector();
 
     private CustomDataSource(String driver, String url, String password, String name) {
         this.driver = driver;
         this.url = url;
-        this.name = name;
         this.password = password;
+        this.name = name;
     }
 
     public static CustomDataSource getInstance() {
-        if (instance == null) {
-
-            Properties properties = new Properties();
-            try {
-                properties.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        if(instance == null){
+            synchronized (CustomDataSource.class){
+                if(instance == null){
+                    Properties props = new Properties();
+                    try {
+                        props.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
+                        instance = new CustomDataSource(
+                                props.getProperty("postgres.driver"),
+                                props.getProperty("postgres.url"),
+                                props.getProperty("postgres.password"),
+                                props.getProperty("postgres.name")
+                        );
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-
-            String driver = properties.getProperty("postgres.driver");
-            String url = properties.getProperty("postgres.url");
-            String password = properties.getProperty("postgres.password");
-            String name = properties.getProperty("postgres.name");
-            return new CustomDataSource(driver, url, password, name);
-
-
         }
         return instance;
     }
 
     @Override
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url);
+        return this.connector.getConnection(this.url, this.name, this.password);
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return DriverManager.getConnection(url, username, password);
-
+        return this.connector.getConnection(this.url, username, password);
     }
 
     @Override
-    public PrintWriter getLogWriter() {
+    public PrintWriter getLogWriter() throws SQLException {
         return null;
     }
 
     @Override
-    public void setLogWriter(PrintWriter out) {
+    public void setLogWriter(PrintWriter printWriter) throws SQLException {
 
     }
 
     @Override
-    public void setLoginTimeout(int seconds) {
+    public void setLoginTimeout(int i) throws SQLException {
 
     }
 
     @Override
-    public int getLoginTimeout() {
+    public int getLoginTimeout() throws SQLException {
         return 0;
     }
 
     @Override
-    public Logger getParentLogger() {
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
         return null;
     }
 
     @Override
-    public <T> T unwrap(Class<T> iface) {
+    public <T> T unwrap(Class<T> aClass) throws SQLException {
         return null;
     }
 
     @Override
-    public boolean isWrapperFor(Class<?> iface) {
+    public boolean isWrapperFor(Class<?> aClass) throws SQLException {
         return false;
     }
 }
