@@ -133,17 +133,17 @@ public class SimpleJDBCRepository {
         return users;
     }
 
-    public User updateUser() {
+    public User updateUser(User user) {
 
         try {
             connection = CustomDataSource.getInstance().getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        long id = 5L;
-        String name = "JohnUpdated";
-        String surName = "Malkovich";
-        int age = 12;
+        long id = user.getId();
+        String name = user.getFirstName();
+        String surName = user.getLastName();
+        int age = user.getAge();
         Long updatedID = null;
         String updatedName = null;
         String updatedlastName = null;
