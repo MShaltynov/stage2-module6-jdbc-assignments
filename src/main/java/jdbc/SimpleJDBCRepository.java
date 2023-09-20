@@ -1,19 +1,11 @@
 package jdbc;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class SimpleJDBCRepository {
 
     private Connection connection = null;
@@ -34,7 +26,7 @@ public class SimpleJDBCRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        Long id = null;
+        long id ;
         String name = "John";
         String surName = "Malkovich";
         int age = 12;
@@ -117,13 +109,11 @@ public class SimpleJDBCRepository {
         List<User> users = new ArrayList<>();
         CustomConnector customConnector = new CustomConnector();
         connection = customConnector.getConnection("jdbc:postgresql://localhost:5432/myfirstdb");
-
-
         try {
-            ps = connection.prepareStatement(findAllUserSQL);
-            ResultSet resultSet = ps.executeQuery();
+            st = connection.createStatement();
+            ResultSet resultSet = st.executeQuery(findAllUserSQL);
             while (resultSet.next()) {
-                Long id;
+                long id;
                 String firstName;
                 String lastName;
                 int age;
@@ -147,8 +137,7 @@ public class SimpleJDBCRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        Long id = 5L;
+        long id = 5L;
         String name = "JohnUpdated";
         String surName = "Malkovich";
         int age = 12;
@@ -156,8 +145,6 @@ public class SimpleJDBCRepository {
         String updatedName = null;
         String updatedlastName = null;
         int updatedAge = 0;
-
-
         try {
             ps = connection.prepareStatement(updateUserSQL);
             ps.setString(1, name);
@@ -194,11 +181,11 @@ public class SimpleJDBCRepository {
             }
             ps = connection.prepareStatement(deleteUser);
             ps.setLong(1, userId);
-            int i=ps.executeUpdate();
-            if (i==0){
-                System.out.println("there are no user with id "+userId);
-            }else{
-                System.out.println("user with id "+userId+" successfully deleted");
+            int i = ps.executeUpdate();
+            if (i == 0) {
+                System.out.println("there are no user with id " + userId);
+            } else {
+                System.out.println("user with id " + userId + " successfully deleted");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
