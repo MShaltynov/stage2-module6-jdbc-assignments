@@ -31,13 +31,14 @@ public class CustomDataSource implements DataSource {
 
     public static CustomDataSource getInstance() {
         if (instance == null) {
-            Properties properties = new Properties();
-            try (FileInputStream fis = new FileInputStream("src/main/resources/app.properties")) {
-                properties.load(fis);
 
+            Properties properties = new Properties();
+            try {
+                properties.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
+
             String driver = properties.getProperty("postgres.driver");
             String url = properties.getProperty("postgres.url");
             String password = properties.getProperty("postgres.password");
