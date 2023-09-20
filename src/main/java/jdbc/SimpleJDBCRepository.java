@@ -27,9 +27,12 @@ public class SimpleJDBCRepository {
             throw new RuntimeException(e);
         }
         long id ;
-        String name = "John";
-        String surName = "Malkovich";
-        int age = 12;
+        String name = user.getFirstName();
+        String surName = user.getLastName();
+        int age = user.getAge();
+        if (name==null||surName==null){
+            return null;
+        }
         try {
             ps = connection.prepareStatement(createUserSQL, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, name);
