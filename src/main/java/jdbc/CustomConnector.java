@@ -11,6 +11,7 @@ public class CustomConnector {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     public Connection getConnection(String url, String user, String password)  {
@@ -19,5 +20,6 @@ public class CustomConnector {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
     }
 }

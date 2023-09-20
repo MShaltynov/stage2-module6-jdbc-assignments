@@ -37,6 +37,7 @@ public class CustomDataSource implements DataSource {
             synchronized (CustomDataSource.class){
                 if(instance == null){
                     Properties props = new Properties();
+
                     try {
                         props.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
                         instance = new CustomDataSource(

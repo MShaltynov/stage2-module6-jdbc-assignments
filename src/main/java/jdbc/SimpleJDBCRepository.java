@@ -37,6 +37,7 @@ public class SimpleJDBCRepository {
 
             if (affectedRows == 0) {
                 throw new SQLException("Creating user failed, no rows affected.");
+
             }
 
             ResultSet resultSet = prepareStatement.getGeneratedKeys();
