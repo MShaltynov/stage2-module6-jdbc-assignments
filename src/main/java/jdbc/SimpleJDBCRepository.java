@@ -20,7 +20,7 @@ public class SimpleJDBCRepository {
     private static final String findUserByNameSQL = "SELECT * FROM myusers where firstname =?";
     private static final String findAllUserSQL = "SELECT * FROM myusers";
 
-    public Long createUser() {
+    public Long createUser(User user) {
         try {
             connection = CustomDataSource.getInstance().getConnection();
         } catch (SQLException e) {
